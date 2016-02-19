@@ -34,6 +34,27 @@ app.get('/people', function(req, res) {
     });
 });
 
+app.get('/salary_sum', function(req, res) {
+    var results = [];
+    pg.connect(connectionString, function(err, client, done) {
+        var query = client.query('SELECT sum(annual_sal) as total_sal FROM people;');
+
+        query.on('row', function(row) {
+            results.push(row);
+        });
+
+        query.on('end', function() {
+            client.end();
+            return res.json(results);
+        });
+
+        if(err) {
+            console.log(err);
+        }
+    });
+});
+
+
 app.post('/people', function(req, res) {
     var addPerson = {
         first_name: req.body.first_name,

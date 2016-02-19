@@ -1,6 +1,6 @@
-var totalSal = 0;
+//var totalSal = 0;
 //var empArray = [];
-var monthlySal = 0;
+//var monthlySal = 0;
 
 $(document).ready(function(){
 	appendDom();
@@ -21,11 +21,6 @@ function createEmployeeObject() {
 		results[field.name] = field.value;
 	});
 
-	totalSal = totalSal + parseInt(results.annualSal / 12);
-	monthlySal = Math.round(parseFloat(totalSal));
-	// Math.round(parseFloat()) this;
-
-	//empArray.push(results);
 
 	$.ajax({
 		type: 'POST',
@@ -74,7 +69,20 @@ function appendDom(){
 }
 
 function updateSalary() {
-	$('#total').replaceWith('<span id="total">' + '$' + monthlySal + '</span>');
+	$.ajax({
+		type: 'GET',
+		url: '/salary_sum',
+		success: function(data) {
+			console.log(data);
+
+			data.forEach(function(person) {
+				var totalSal = person.total_sal
+				var monthlySal = Math.round(parseFloat(totalSal / 12));
+
+				$('#total').replaceWith('<span id="total">' + '$' + monthlySal + '</span>');
+			});
+		}
+	});
 }
 
 function deleteEmployee() {
