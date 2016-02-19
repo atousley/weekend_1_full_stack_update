@@ -1,13 +1,10 @@
-//var totalSal = 0;
-//var empArray = [];
-//var monthlySal = 0;
 
 $(document).ready(function(){
-	appendDom();
+	appendAll();
 
 	$('#empInfo').on('submit', createEmployeeObject);
 
-	$('#container').on('click', '.deleteButton', deleteEmployee);
+	$('.people-list').on('click', '.deactivateButton', deactivateEmployee);
 
 });
 
@@ -29,8 +26,8 @@ function createEmployeeObject() {
 		success: function(data) {
 			if(data) {
 				// everything went ok
-				console.log('from server:', data);
-				appendDom();
+				//console.log('from server:', data);
+				appendNew();
 			} else {
 				console.log('error');
 			}
@@ -39,31 +36,29 @@ function createEmployeeObject() {
 		}
 	});
 }
+function appendNew() {
+	$.ajax({
+		type: 'GET',
+		url: '/last_person',
+		success: function(data) {
+			//console.log(data);
 
-function appendDom(){
+			updateSalary();
+			updateDom(data);
+		}
+	});
+}
+
+function appendAll(){
 	$.ajax({
 		type: 'GET',
 		url: '/people',
 		success: function(data) {
-			console.log(data);
+			//console.log(data);
 
 			updateSalary();
-
 			$('.people-list').children().remove();
-
-			data.forEach(function(person) {
-				$('.people-list').append('<p></p>');
-
-				var $el = $('.people-list').children().last();
-
-				$el.append(person.id + ': ');
-				$el.append(person.first_name + ', ');
-				$el.append(person.last_name + ', ');
-				$el.append(person.id_num + ', ');
-				$el.append(person.title + ', ');
-				$el.append(person.annual_sal + ' ');
-				$el.append('<button class="deleteButton">Delete Employee</button>');
-			});
+			updateDom(data);
 		}
 	});
 }
@@ -73,7 +68,7 @@ function updateSalary() {
 		type: 'GET',
 		url: '/salary_sum',
 		success: function(data) {
-			console.log(data);
+			//console.log(data);
 
 			data.forEach(function(person) {
 				var totalSal = person.total_sal
@@ -85,13 +80,49 @@ function updateSalary() {
 	});
 }
 
-function deleteEmployee() {
-	var index = $(this).data().id;
-	var employee = empArray[index];
+//update status to inactive
+function deactivateEmployee() {
 
-	totalSal -= Math.round(employee.annualSal /12);
-	totalSal = parseFloat(totalSal);
+	//console.log('clicked');
+	//testData = $(this).data('id');
+	//console.log(testData);
+
+	var deactivate = {};
+	var index = $(this).data('id');
+
+	deactivate.person = index;
+	console.log(deactivate);
+
 	updateSalary();
 
-	$(this).parent().remove();
+	$.ajax({
+		type: 'POST',
+		url: '/change_status',
+		data: deactivate,
+		success: function(data) {
+			if(data) {
+				console.log('from server:', data);
+				deactivateOnDom();
+				$(this).addClass
+			} else {
+				console.log('error');
+			}
+		}
+	});
+}
+
+function updateDom(data) {
+	data.forEach(function(person) {
+		$('.people-list').append('<p></p>');
+
+		var $el = $('.people-list').children().last();
+
+		$el.append(person.id + ': ');
+		$el.append(person.first_name + ' ');
+		$el.append(person.last_name + ', ');
+		$el.append(person.id_num + ', ');
+		$el.append(person.title + ', ');
+		$el.append(person.annual_sal + ' ');
+		$el.append('<button class="deactivateButton" data-id = " '+ person.id_num +' ">Deactivate Employee</button>');
+	});
 }

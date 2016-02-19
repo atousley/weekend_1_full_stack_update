@@ -22,3 +22,8 @@ label {
 #total {
 	font-weight: bold;
 }
+
+.inactive {
+	font-style: italic;
+	color: darkgray;
+}

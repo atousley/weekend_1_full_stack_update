@@ -34,6 +34,26 @@ app.get('/people', function(req, res) {
     });
 });
 
+app.get('/last_person', function(req, res) {
+    var results = [];
+    pg.connect(connectionString, function(err, client, done) {
+        var query = client.query('SELECT * FROM people ORDER BY id DESC LIMIT 1;');
+
+        query.on('row', function(row) {
+            results.push(row);
+        });
+
+        query.on('end', function() {
+            client.end();
+            return res.json(results);
+        });
+
+        if(err) {
+            console.log(err);
+        }
+    });
+});
+
 app.get('/salary_sum', function(req, res) {
     var results = [];
     pg.connect(connectionString, function(err, client, done) {
@@ -62,11 +82,34 @@ app.post('/people', function(req, res) {
         id_num: req.body.id_num,
         title: req.body.title,
         annual_sal: req.body.annual_sal
+
     };
 
     pg.connect(connectionString, function(err, client, done) {
-        client.query("INSERT INTO people (first_name, last_name, id_num, title, annual_sal) VALUES ($1, $2, $3, $4, $5) RETURNING id",
-            [addPerson.first_name, addPerson.last_name, addPerson.id_num, addPerson.title, addPerson.annual_sal],
+        client.query("INSERT INTO people (first_name, last_name, id_num, title, annual_sal, status) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id",
+            [addPerson.first_name, addPerson.last_name, addPerson.id_num, addPerson.title, addPerson.annual_sal, true],
+            function (err, result) {
+                done();
+
+                if(err) {
+                    console.log("Error inserting data: ", err);
+                    res.send(false);
+                } else {
+                    res.send(result);
+                }
+            });
+    });
+
+});
+
+app.post('/change_status', function(req, res) {
+    var addPerson = {
+        person: req.body.person
+    };
+
+    pg.connect(connectionString, function(err, client, done) {
+        client.query("UPDATE people SET status = false WHERE id_num = person",
+            [addPerson.person],
             function (err, result) {
                 done();
 
