@@ -1,0 +1,19 @@
+{
+  "name": "full_stack_update_weekend_1",
+  "version": "1.0.0",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js"
+  },
+  "author": "annette",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.15.0",
+    "express": "^4.13.4",
+    "path": "^0.12.7",
+    "pg": "^4.4.6"
+  },
+  "devDependencies": {},
+  "description": ""
+}
