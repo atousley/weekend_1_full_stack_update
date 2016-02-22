@@ -1,12 +1,8 @@
 $(document).ready(function(){
 	appendAll();
-
 	$('#empInfo').on('submit', createEmployeeObject);
-
 	$('.people-list').on('click', '.deactivateButton', deactivateEmployee);
-
 });
-
 
 function createEmployeeObject() {
 	event.preventDefault();
@@ -16,7 +12,6 @@ function createEmployeeObject() {
 	$.each($('#empInfo').serializeArray(), function(i, field) {
 		results[field.name] = field.value;
 	});
-
 
 	$.ajax({
 		type: 'POST',
@@ -33,13 +28,12 @@ function createEmployeeObject() {
 		}
 	});
 }
+
 function appendNew() {
 	$.ajax({
 		type: 'GET',
 		url: '/last_person',
 		success: function(data) {
-			//console.log(data);
-
 			updateSalary();
 			updateDom(data);
 		}
@@ -51,8 +45,6 @@ function appendAll(){
 		type: 'GET',
 		url: '/people',
 		success: function(data) {
-			//console.log(data);
-
 			updateSalary();
 			$('.people-list').children().remove();
 			updateDom(data);
@@ -65,8 +57,6 @@ function updateSalary() {
 		type: 'GET',
 		url: '/salary_sum',
 		success: function(data) {
-			//console.log(data);
-
 			data.forEach(function(person) {
 				var totalSal = person.total_sal
 				var monthlySal = Math.round(parseFloat(totalSal / 12));
@@ -77,20 +67,11 @@ function updateSalary() {
 	});
 }
 
-//update status to inactive
 function deactivateEmployee() {
-
-	//console.log('clicked');
-	//testData = $(this).data('id');
-	//console.log(testData);
-
 	var deactivate = {};
 	var index = $(this).data('id');
 
 	deactivate.person = index;
-	console.log(deactivate);
-
-	updateSalary();
 
 	$.ajax({
 		type: 'POST',
@@ -98,7 +79,6 @@ function deactivateEmployee() {
 		data: deactivate,
 		success: function(data) {
 			if(data) {
-				console.log('from server:', data);
 				appendAll();
 			} else {
 				console.log('error');
