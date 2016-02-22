@@ -1,0 +1,11 @@
+CREATE TABLE people (
+  id SERIAL NOT NULL,
+  first_name varchar(75) NOT NULL,
+  last_name varchar(75) NOT NULL,
+  id_num integer NOT NULL,
+  title varchar(100) NOT NULL,
+  annual_sal numeric(7,2) NOT NULL,
+  status boolean,
+  CONSTRAINT people_pkey PRIMARY KEY (id),
+  CONSTRAINT people_id_num_key UNIQUE (id_num)
+)
