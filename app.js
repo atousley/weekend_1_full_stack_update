@@ -17,7 +17,7 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.get('/people', function(req, res) {
     var results = [];
     pg.connect(connectionString, function(err, client, done) {
-        var query = client.query('SELECT * FROM people ORDER BY id ASC;');
+        var query = client.query('SELECT * FROM people WHERE status = true ORDER BY id ASC;');
 
         query.on('row', function(row) {
             results.push(row);
@@ -57,7 +57,7 @@ app.get('/last_person', function(req, res) {
 app.get('/salary_sum', function(req, res) {
     var results = [];
     pg.connect(connectionString, function(err, client, done) {
-        var query = client.query('SELECT sum(annual_sal) as total_sal FROM people;');
+        var query = client.query('SELECT sum(annual_sal) as total_sal FROM people WHERE status = true;');
 
         query.on('row', function(row) {
             results.push(row);
@@ -102,14 +102,14 @@ app.post('/people', function(req, res) {
 
 });
 
+
 app.post('/change_status', function(req, res) {
     var addPerson = {
         person: req.body.person
     };
 
     pg.connect(connectionString, function(err, client, done) {
-        client.query("UPDATE people SET status = false WHERE id_num = person",
-            [addPerson.person],
+        client.query("UPDATE people SET status = false WHERE id_num = " + addPerson.person,
             function (err, result) {
                 done();
 

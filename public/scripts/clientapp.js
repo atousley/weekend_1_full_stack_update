@@ -1,4 +1,3 @@
-
 $(document).ready(function(){
 	appendAll();
 
@@ -25,8 +24,6 @@ function createEmployeeObject() {
 		data: results,
 		success: function(data) {
 			if(data) {
-				// everything went ok
-				//console.log('from server:', data);
 				appendNew();
 			} else {
 				console.log('error');
@@ -102,8 +99,7 @@ function deactivateEmployee() {
 		success: function(data) {
 			if(data) {
 				console.log('from server:', data);
-				deactivateOnDom();
-				$(this).addClass
+				appendAll();
 			} else {
 				console.log('error');
 			}
